@@ -3,42 +3,13 @@ const header = document.querySelector('.header');
 
 window.addEventListener('scroll', () => {
     if (window.scrollY > 50) {
-        header.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+        header.style.background = 'rgba(10, 25, 47, 0.95)';
+        header.style.padding = '1rem 5%';
     } else {
-        header.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        header.style.background = 'rgba(10, 25, 47, 0.85)';
+        header.style.padding = '1.5rem 5%';
     }
 });
-
-// Smooth Scroll for Navigation Links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 70, // Adjust for fixed header
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// Scroll Animation with Intersection Observer
-const observerOptions = {
-    threshold: 0.1
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            entry.target.style.opacity = 1;
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
 
 // Mobile Menu Toggle
 const hamburger = document.querySelector('.hamburger');
@@ -46,23 +17,52 @@ const nav = document.querySelector('.nav');
 
 if (hamburger) {
     hamburger.addEventListener('click', () => {
-        nav.classList.toggle('active');
+        if (nav.style.display === 'flex') {
+            nav.style.display = 'none';
+        } else {
+            nav.style.display = 'flex';
+            nav.style.flexDirection = 'column';
+            nav.style.position = 'absolute';
+            nav.style.top = '100%';
+            nav.style.left = '0';
+            nav.style.width = '100%';
+            nav.style.background = 'var(--bg-main)';
+            nav.style.padding = '2rem';
+        }
     });
 }
 
 // Close mobile menu when a link is clicked
 document.querySelectorAll('.nav a').forEach(link => {
     link.addEventListener('click', () => {
-        if (nav.classList.contains('active')) {
-            nav.classList.remove('active');
+        if (window.innerWidth <= 768) {
+            nav.style.display = 'none';
         }
     });
 });
 
-// Add initial styles and observe elements
-document.querySelectorAll('.section-title, .service-card, .box, .gallery-item, .route-card').forEach(el => {
-    el.style.opacity = 0;
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'all 0.6s ease-out';
+// Scroll Animation with Intersection Observer
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+// Observe elements for reveal animation
+document.querySelectorAll('.section-title, .service-card, .feature-item, .fleet-card').forEach(el => {
     observer.observe(el);
+});
+
+// Hero animations trigger on load
+window.addEventListener('load', () => {
+    document.querySelectorAll('.animate-reveal').forEach(el => {
+        el.style.opacity = '1';
+    });
 });
